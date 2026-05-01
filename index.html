@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Farm Game</title>
+</head>
+<body>
+  <style>
+    :root {
+  --sky-top: #87CEEB;
+  --sky-bottom: #c9e8f5;
+  --grass-color: #5db84a;
+  --btn-market-bg: #3a7bd5;
+  --btn-leaders-bg: #c0392b;
+  --btn-settings-bg: #e8a020;
+  --btn-text: #fff;
+  --hud-bg: rgba(255,245,200,0.92);
+  --hud-border: #c8a050;
+  --wood-dark: #7a4a1e;
+  --wood-mid: #a0622a;
+  --wood-light: #c8843e;
+  --hay-color: #e8c840;
+  --panel-bg: #8B5E2A;
+  --plus-btn: #3cb84a;
+  --timer-bg: #f5e8c0;
+  --progress-fill: #f0d020;
+  --progress-bg: #fff;
+  --coin-gold: #f5c518;
+  --overlay-radius: 33px;
+  --game-width: 1080px;
+  --game-height: 1920px;
+
+  /* Scale factor: 1080/390 ≈ 2.769 */
+  --s: 2.769;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Lato, sans-serif;
+  font-weight: 200;
+}
+.game-screen {
+  position: relative;
+  width: var(--game-width);
+  height: var(--game-height);
+  overflow: hidden;
+  border-radius: 25px;
+  box-shadow: 0 0 110px rgba(0,0,0,0.7);
+  user-select: none;
+}
+.scene-background {
+  position: absolute;
+  inset: 0;
+  background-image: url(/img/background.png);
+  background-size: cover;
+  background-position: center top;
+  z-index: 0;
+}
+
+/* =============================================
+   HUD — верхняя панель
+============================================= */
+.hud-top {
+  position: absolute;
+  top: 33px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  gap: 28px;
+  border: 6px solid red;
+  padding: 0 33px 0 33px;
+}
+.hud-grain {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  background-image: url(/img/background-food.png);
+  background-size: cover;
+  background-position: center top;
+  padding: 25px 33px;
+  font-size: 55px;
+  font-weight: 200;
+  color: #000000;
+}
+.icon-grain {
+  width: 89px;
+  height: 89px;
+  background-image: url(/img/food.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.hud-center {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--hud-bg);
+  border: 6px solid var(--hud-border);
+  border-radius: var(--overlay-radius);
+  padding: 17px 28px;
+}
+.hud-add-btn {
+  width: 72px;
+  height: 72px;
+  background: var(--plus-btn);
+  color: #fff;
+  border: none;
+  border-radius: 17px;
+  font-size: 55px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 200;
+}
+.hud-stat {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 50px;
+  font-weight: 200;
+  color: #000000;
+}
+.icon-chicken-adult {
+  width: 78px;
+  height: 78px;
+  background: #e09050;
+  border-radius: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.icon-chicken-young {
+  width: 78px;
+  height: 78px;
+  background: #d07840;
+  border-radius: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.icon-egg {
+  width: 61px;
+  height: 61px;
+  background: var(--coin-gold);
+  border-radius: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.hud-divider {
+  width: 6px;
+  height: 61px;
+  background: var(--hud-border);
+  border-radius: 6px;
+  margin: 0 11px;
+}
+.hud-money {
+  background: var(--hud-bg);
+  border: 6px solid var(--hud-border);
+  border-radius: var(--overlay-radius);
+  padding: 17px 33px;
+  text-align: center;
+  font-weight: 200;
+  color: #000000;
+  font-size: 39px;
+  line-height: 1.4;
+}
+
+/* =============================================
+   ИГРОВАЯ СЦЕНА
+============================================= */
+.scene-objects {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+/* =============================================
+   НАВЕС С МЕШКАМИ
+============================================= */
+.storage-shed {
+  position: absolute;
+  top: 637px;
+  left: -28px;
+  width: 499px;
+  height: 443px;
+  background: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.storage-shed-placeholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.shed-roof {
+  width: 471px;
+  height: 166px;
+  background: #d4a050;
+  border-radius: 11px 11px 0 0;
+  position: absolute;
+  top: 0; left: 0;
+  clip-path: polygon(0 100%, 10% 0, 90% 0, 100% 100%);
+}
+.shed-pole-left  { position: absolute; bottom: 83px; left: 50px;  width: 33px; height: 222px; background: var(--wood-mid); border-radius: 11px; }
+.shed-pole-right { position: absolute; bottom: 83px; right: 50px; width: 33px; height: 222px; background: var(--wood-mid); border-radius: 11px; }
+.bags-row {
+  position: absolute;
+  bottom: 0;
+  left: 55px;
+  display: flex;
+  gap: 22px;
+}
+.bag {
+  width: 111px;
+  height: 139px;
+  background: #b09070;
+  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* =============================================
+   МАГАЗИН (РЫНОК)
+============================================= */
+.market-building {
+  position: absolute;
+  top: 277px;
+  right: 28px;
+  width: 609px;
+  height: 609px;
+  background: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  cursor: pointer;
+}
+.market-placeholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.market-roof {
+  position: absolute;
+  top: 0; left: 28px; right: 28px;
+  height: 222px;
+  background: #c0302a;
+  clip-path: polygon(0 100%, 12% 0, 88% 0, 100% 100%);
+}
+.market-walls {
+  position: absolute;
+  bottom: 0; left: 28px; right: 28px;
+  height: 415px;
+  background: var(--wood-light);
+  border-radius: 11px 11px 0 0;
+}
+.market-sign {
+  position: absolute;
+  top: 222px; left: 83px; right: 83px;
+  height: 100px;
+  background: #f5e8c0;
+  border: 8px solid var(--wood-dark);
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  font-weight: bold;
+  color: #000000;
+  letter-spacing: 6px;
+}
+.market-door {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 111px; height: 166px;
+  background: var(--wood-dark);
+  border-radius: 17px 17px 0 0;
+}
+
+/* =============================================
+   КЛЕТКА / ИНКУБАТОР
+============================================= */
+.incubator {
+  position: absolute;
+  top: 1163px;
+  left: 55px;
+  width: 388px;
+  height: 499px;
+  background: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.incubator-placeholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--wood-mid);
+  border-radius: 22px;
+  border: 11px solid var(--wood-dark);
+}
+.incubator-grid {
+  position: absolute;
+  inset: 55px 0 111px 0;
+  background:
+    repeating-linear-gradient(90deg, var(--wood-dark) 0px, var(--wood-dark) 8px, transparent 8px, transparent 55px),
+    repeating-linear-gradient(0deg, var(--wood-dark) 0px, var(--wood-dark) 8px, transparent 8px, transparent 55px);
+  opacity: 0.5;
+}
+.incubator-progress-wrap {
+  position: absolute;
+  bottom: 28px; left: 28px;
+  width: 55px;
+  height: 277px;
+  background: var(--progress-bg);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 6px solid var(--wood-dark);
+}
+.incubator-progress-fill {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: var(--progress-fill);
+  border-radius: 0 0 28px 28px;
+  transition: height 0.3s;
+}
+.incubator-timer {
+  position: absolute;
+  top: -44px;
+  left: 83px;
+  background: var(--timer-bg);
+  border: 6px solid var(--hud-border);
+  border-radius: 22px;
+  padding: 6px 22px;
+  font-size: 42px;
+  font-weight: bold;
+  color: #000000;
+}
+.incubator-add-btn {
+  position: absolute;
+  top: -44px;
+  left: 17px;
+  width: 72px;
+  height: 72px;
+  background: var(--plus-btn);
+  color: #fff;
+  border: none;
+  border-radius: 17px;
+  font-size: 55px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* =============================================
+   КУРИЦА
+============================================= */
+.chicken-sprite {
+  position: absolute;
+  top: 1468px;
+  left: 50%;
+  transform: translateX(-60%);
+  width: 277px;
+  height: 277px;
+  background: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  animation: chickenIdle 2s ease-in-out infinite;
+}
+.chicken-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #e09050;
+  border-radius: 50% 50% 40% 40%;
+  position: relative;
+}
+@keyframes chickenIdle {
+  0%, 100% { transform: translateX(-60%) rotate(-2deg); }
+  50%       { transform: translateX(-60%) rotate(2deg); }
+}
+
+/* =============================================
+   СОБАЧЬЯ БУДКА
+============================================= */
+.dog-house {
+  position: absolute;
+  top: 1274px;
+  right: 55px;
+  width: 360px;
+  height: 332px;
+  background: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.dog-house-add-btn {
+  position: absolute;
+  top: -44px;
+  right: 55px;
+  width: 72px;
+  height: 72px;
+  background: var(--plus-btn);
+  color: #fff;
+  border: none;
+  border-radius: 17px;
+  font-size: 55px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.dog-house-placeholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.dh-roof {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 139px;
+  background: var(--wood-mid);
+  clip-path: polygon(0 100%, 15% 0, 85% 0, 100% 100%);
+}
+.dh-walls {
+  position: absolute;
+  bottom: 0; left: 28px; right: 28px;
+  height: 208px;
+  background: var(--wood-light);
+  border-radius: 11px 11px 0 0;
+}
+.dh-door {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 116px; height: 139px;
+  background: #3a2000;
+  border-radius: 50% 50% 0 0;
+}
+
+/* =============================================
+   СТОГ СЕНА
+============================================= */
+.hay-trough {
+  position: absolute;
+  bottom: 222px;
+  left: 0; right: 0;
+  height: 360px;
+  background: transparent;
+  background-size: cover;
+  background-position: top;
+}
+.hay-trough-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.hay-body {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 194px;
+  background: var(--wood-dark);
+  border-top: 17px solid var(--wood-mid);
+}
+.hay-top {
+  position: absolute;
+  bottom: 166px; left: -28px; right: -28px;
+  height: 166px;
+  background: var(--hay-color);
+  border-radius: 50% 50% 0 0;
+}
+
+/* =============================================
+   НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ
+============================================= */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 222px;
+  background: var(--panel-bg);
+  border-top: 11px solid var(--wood-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 33px 22px;
+  z-index: 20;
+}
+.nav-btn {
+  flex: 1;
+  margin: 0 17px;
+  height: 144px;
+  border: none;
+  border-radius: 33px;
+  font-size: 44px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: var(--btn-text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 11px 0 rgba(0,0,0,0.35);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-transform: uppercase;
+}
+.nav-btn:active {
+  transform: translateY(8px);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.35);
+}
+.nav-btn-market   { background: var(--btn-market-bg); }
+.nav-btn-leaders  { background: var(--btn-leaders-bg); }
+.nav-btn-settings { background: var(--btn-settings-bg); }
+.nav-icon {
+  width: 66px;
+  height: 66px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-size: 44px;
+  line-height: 1;
+}
+
+/* =============================================
+   ГРЯЗНЫЕ ПЯТНА (декор)
+============================================= */
+.dirt-patch {
+  position: absolute;
+  background: rgba(100, 70, 30, 0.18);
+  border-radius: 50%;
+}
+.dirt-1 { width: 249px; height: 111px; top: 1358px; left: 388px; transform: rotate(-10deg); }
+.dirt-2 { width: 332px; height: 138px; top: 1051px; right: 222px; transform: rotate(5deg); }
+.dirt-3 { width: 194px; height: 83px;  top: 1717px; left: 499px; }
+
+  </style>
+<div class="game-screen">
+  <div class="scene-background"></div>
+
+  <div class="hud-top">
+    <div class="hud-grain">
+      <div class="icon-grain"></div>
+      <span id="grain-count">01</span>
+    </div>
+
+    <div class="hud-center">
+      <button class="hud-add-btn" onclick="onAddChicken()">+</button>
+      <div class="hud-stat">
+        <div class="icon-chicken-adult"></div>
+        <span id="adult-count">2</span>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-stat">
+        <div class="icon-chicken-young"></div>
+        <span id="young-count">1</span>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-stat">
+        <div class="icon-egg"></div>
+        <span id="egg-count">10</span>
+      </div>
+    </div>
+
+    <div class="hud-money">
+      <div id="day-label">1 День</div>
+      <div id="money-label">000$</div>
+    </div>
+  </div>
+
+  <div class="scene-objects">
+    <div class="dirt-patch dirt-1"></div>
+    <div class="dirt-patch dirt-2"></div>
+    <div class="dirt-patch dirt-3"></div>
+
+    <div class="storage-shed" onclick="onStorageClick()">
+      <div class="storage-shed-placeholder">
+        <div class="shed-roof"></div>
+        <div class="shed-pole-left"></div>
+        <div class="shed-pole-right"></div>
+        <div class="bags-row">
+          <div class="bag"></div>
+          <div class="bag"></div>
+          <div class="bag"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="market-building" onclick="onMarketClick()">
+      <div class="market-placeholder">
+        <div class="market-roof"></div>
+        <div class="market-walls"></div>
+        <div class="market-sign">РЫНОК</div>
+        <div class="market-door"></div>
+      </div>
+    </div>
+
+    <div class="incubator" onclick="onIncubatorClick()">
+      <button class="incubator-add-btn" onclick="event.stopPropagation(); onIncubatorAdd()">+</button>
+      <div class="incubator-timer" id="incubator-timer">12:38</div>
+      <div class="incubator-placeholder">
+        <div class="incubator-grid"></div>
+        <div class="incubator-progress-wrap">
+          <div class="incubator-progress-fill" id="incubator-fill" style="height:40%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chicken-sprite" onclick="onChickenClick()">
+      <div class="chicken-placeholder"></div>
+    </div>
+
+    <div class="dog-house" onclick="onDogHouseClick()">
+      <button class="dog-house-add-btn" onclick="event.stopPropagation(); onDogHouseAdd()">+</button>
+      <div class="dog-house-placeholder">
+        <div class="dh-roof"></div>
+        <div class="dh-walls"></div>
+        <div class="dh-door"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hay-trough">
+    <div class="hay-trough-placeholder">
+      <div class="hay-top"></div>
+      <div class="hay-body"></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn nav-btn-market" onclick="onNavMarket()">
+      <div class="nav-icon nav-icon-market">🏪</div>
+      РЫНОК
+    </button>
+    <button class="nav-btn nav-btn-leaders" onclick="onNavLeaders()">
+      <div class="nav-icon nav-icon-leaders">👑</div>
+      ЛИДЕРЫ
+    </button>
+    <button class="nav-btn nav-btn-settings" onclick="onNavSettings()">
+      <div class="nav-icon nav-icon-settings">⚙️</div>
+      НАСТРОЙКИ
+    </button>
+  </div>
+</div>
+
+<script>
+  function onAddChicken()     { console.log('ADD CHICKEN'); }
+  function onStorageClick()   { console.log('STORAGE CLICKED'); }
+  function onMarketClick()    { console.log('MARKET CLICKED'); }
+  function onIncubatorClick() { console.log('INCUBATOR CLICKED'); }
+  function onIncubatorAdd()   { console.log('INCUBATOR ADD'); }
+  function onChickenClick()   { console.log('CHICKEN CLICKED'); }
+  function onDogHouseClick()  { console.log('DOG HOUSE CLICKED'); }
+  function onDogHouseAdd()    { console.log('DOG HOUSE ADD'); }
+  function onNavMarket()      { console.log('NAV: MARKET'); }
+  function onNavLeaders()     { console.log('NAV: LEADERS'); }
+  function onNavSettings()    { console.log('NAV: SETTINGS'); }
+
+  function updateHUD({ grain, adults, young, eggs, day, money }) {
+    document.getElementById('grain-count').textContent  = grain;
+    document.getElementById('adult-count').textContent  = adults;
+    document.getElementById('young-count').textContent  = young;
+    document.getElementById('egg-count').textContent    = eggs;
+    document.getElementById('day-label').textContent    = day + ' День';
+    document.getElementById('money-label').textContent  = money + '$';
+  }
+
+  function updateIncubator({ timeLabel, fillPercent }) {
+    document.getElementById('incubator-timer').textContent = timeLabel;
+    document.getElementById('incubator-fill').style.height = fillPercent + '%';
+  }
+</script>
+
+</body>
+</html>
