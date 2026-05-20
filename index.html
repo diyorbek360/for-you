@@ -13,6 +13,9 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
+:root{
+  --main-border: 1px solid red;
+}
 html, body {
   width: 100%;
   height: 100%;
@@ -22,6 +25,7 @@ html, body {
   align-items: center;
   overflow: visible;
   font-family: 'Lato', sans-serif;
+  
 }
 /* ── Main game container (9:16) ── */
 #game {
@@ -39,6 +43,7 @@ html, body {
   inset: 0;
   background: url('assets/img/background.png') center / cover no-repeat;
   z-index: 0;
+  border-radius: 15px;
 }
 /* ── TOP BAR ── */
 .top-bar {
@@ -51,12 +56,12 @@ html, body {
   justify-content: space-between;
   align-items: flex-start;
   padding: 2% 3%;
-  border: 1px solid red;
+  /* border: var(--main-border); */
 }
 /* Bag of feed counter (top-left) */
 .feed-counter {
   background: url('assets/img/background of food.png') center / 100% 100% no-repeat;
-  width: 16%;
+  width: 18%;
   aspect-ratio: 174/103;
   display: flex;
   align-items: center;
@@ -68,44 +73,13 @@ html, body {
 }
 .feed-counter .feed-num {
   font-size: 2vh;
-  font-weight: 600;
   color: #000000;
+  font-family: "Futura PT", "Century Gothic", sans-serif;
+  font-weight: 700;
   text-shadow: 0 1px 0 rgba(255,255,255,0.4);
 }
 /* Center cluster: +, chickens, rooster, egg */
-.center-stats {
-  display: flex;
-  align-items: center;
-  gap: 1.5%;
-}
-.btn-add-chicken {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-add-chicken img {
-  width: 4.5vw;
-  max-width: 28px;
-}
-.stat-pill {
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  gap: 4%;
-  padding: 1% 6%;
-  font-size: 1.7vh;
-  font-weight: 900;
-  color: #5a3210;
-  overflow: visible;
-}
-.stat-pill img {
-  height: 2.2vh;
-  overflow: visible;
-}
+
 /* Day counter (top-right) */
 .day-counter {
   background: url('assets/img/background of day.png') center / 100% 100% no-repeat;
@@ -118,14 +92,16 @@ html, body {
   line-height: 1.1;
 }
 .day-counter .day-label {
-  font-size: 1.4vh;
-  font-weight: 900;
-  color: #5a3210;
+  font-size: 1.5vh;
+  font-family: "Futura PT", "Century Gothic", sans-serif;
+  font-weight: 700;
+  color: #000;
 }
 .day-counter .day-money {
-  font-size: 1.3vh;
-  font-weight: 900;
-  color: #5a3210;
+  font-size: 1.5vh;
+  font-weight: 700;
+  font-family: "Futura PT", "Century Gothic", sans-serif;
+  color: #000;
 }
 /* ── SCENE ── */
 .scene {
@@ -135,35 +111,34 @@ html, body {
   right: 0;
   bottom: 22%;
   z-index: 1;
+  
 }
 /* Warehouse (top-left of scene) */
 .warehouse {
   position: absolute;
-  top: 0%;
-  left: 1%;
-  width: 32%;
+  top: 24%;
+  left: 0%;
+  width: 35%;
   cursor: pointer;
   transition: transform 0.12s;
 }
-.warehouse:active { transform: scale(0.95); }
 .warehouse img { width: 100%; display: block; }
 /* Market building (top-right) */
 .market-building {
   position: absolute;
-  top: 0%;
-  right: 1%;
-  width: 48%;
+  top: 9%;
+  right: 0%;
+  width: 50%;
   cursor: pointer;
   transition: transform 0.12s;
 }
-.market-building:active { transform: scale(0.95); }
 .market-building img { width: 100%; display: block; }
 /* Feeder (left-center) */
 .feeder-wrap {
   position: absolute;
-  top: 36%;
-  left: 1%;
-  width: 22%;
+  top: 56%;
+  left: -2%;
+  width: 38%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -220,123 +195,220 @@ html, body {
 /* Chicken (center) */
 .chicken-wrap {
   position: absolute;
-  top: 52%;
-  left: 38%;
-  width: 22%;
+  top: 70%;
+  left: 46%;
+  width: 18%;
   cursor: pointer;
   animation: chickBob 1.8s ease-in-out infinite;
 }
 .chicken-wrap img { width: 100%; display: block; }
-@keyframes chickBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4%); }
-}
+
 /* Coop (right-center) */
 .coop-wrap {
   position: absolute;
-  top: 38%;
-  right: 3%;
-  width: 28%;
+  top: 49%;
+  right: 0%;
+  width: 23%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
-.btn-plus-coop {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 1%;
-  margin-right: 0;
-  align-self: flex-end;
-}
+
 .btn-plus-coop img { width: 5vw; max-width: 32px; }
 .coop-wrap img.coop-img { width: 100%; display: block; }
 /* ── BOTTOM SECTION ── */
-.bottom-section {
+.roost-wrap{
+  position: absolute;
+  top: 101%;
+  right: 0%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.roost-img{
+  width: 100%; 
+  display: block; 
+}
+
+.panel {
+  top: 70%;
+  position: relative;
+  width: 680px;
+}
+
+.roost {
+  width: 100%;
+  height: 100px;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.center-stats {
+  display: flex;
+  position: relative;
+  width: 248px;
+  height: 42px;
+  top: 5px;
+
+  /* border: var(--main-border); */
+}
+/* ── BOTTOM PANEL ── */
+.bottom-panel {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
-/* Hay / nest area */
-.hay-area {
+
+/* Корыто с сеном — выезжает за верхний край панели */
+.roost-bar {
   width: 100%;
-  aspect-ratio: 1079/208;
+  aspect-ratio: 2156 / 512;
   background: url('assets/img/roost.png') center / 100% 100% no-repeat;
+  margin-bottom: -2%;  /* лёгкое перекрытие с bg_bottom */
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
 }
-/* Bottom nav bar */
-.nav-bar {
-  background: url('assets/img/background of bottom.png') center / 100% 100% no-repeat;
+
+/* Золотая полоска-фон */
+.panel-bg {
   width: 100%;
-  aspect-ratio: 1079/208;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 2% 3%;
-  gap: 2%;
-}
-.nav-btn {
-  flex: 1;
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 0;
+  aspect-ratio: 1079 / 208;
+  background: url('assets/img/background of bottom.png') center / 100% 100% no-repeat;
+  height: 90%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s, filter 0.1s;
-}
-.nav-btn:active {
-  transform: scale(0.93);
-  filter: brightness(0.85);
-}
-.nav-btn img {
-  width: 100%;
-  max-width: 130px;
-  display: block;
-}
-.full-frame {
-  /* overflow: visible; */
-  padding: 4% 8%;
-  display: flex;
-  align-items: center;
-  gap: 12%;
-  border: 1px solid red;
-}
-.frame-1 {
+  gap: 1.5%;
+  padding: 1% 3% 2%;
   position: relative;
+  z-index: 1;
 }
-.frame-2{
-  display: flex;
-  align-items: center;
-  gap: 6%;
+
+/* Кнопки */
+.btn {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.08s ease;
+  flex-shrink: 0;
+}
+.btn:active { transform: scale(0.96) translateY(2px); }
+
+/* market: 304×200 */
+.btn-market  {bottom: 10px; width: 30%; aspect-ratio: 304 / 200;}
+/* leaders: 304×202 */
+.btn-leaders {bottom: 10px; width: 30%; aspect-ratio: 304 / 202; }
+/* settings: 353×199 — шире */
+.btn-settings { bottom: 10px; width: 35%;  aspect-ratio: 353 / 199; }
+
+.btn img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+}
+
+.btn-label {
+  position: absolute;
+  bottom: 20%;
+  color: white;            
+  -webkit-text-stroke: 1px black;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'Luckiest Guy', sans-serif;
+  font-size: 2.3vh;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4);
+  pointer-events: none;
+  transform: scaleY(1.2);
+}
+/* ОБЩИЕ */
+.left-block,
+.middle-block,
+.right-block {
+  position: absolute;
+  height: 42px;
+  background: #fff;
+  border: 2.9px solid #2b0b05; 
+  box-shadow: inset 0px 3px 2px 1px rgba(0,0,0,0.27);
+  
+  
+}
+/* ЛЕВЫЙ */
+.left-block {
+  width: 198px;
+  left: 15px;
+  border-radius: 99px;
+  z-index: 1;
+}
+
+/* ЦЕНТР */
+.middle-block {
+  width: 81px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 99px 0 0 99px;
+  z-index: 2;
+}
+
+/* ПРАВЫЙ */
+.right-block {
+  width: 89px;
+  right: 0;
+  border-radius: 0 99px 99px 0;
+  z-index: 1;
+}
+.day-line-money {
+  border-top: 2px solid #2b0b05;
+  width: 62%;
 
 }
-.frame-bg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1.2); /* увеличил — вылезет */
-  z-index: -1; /* чтобы было под контентом */
-  pointer-events: none;
-  width: 120px;
-  
+.plus-icon {
+  z-index: 2;
+  margin-top: 4px;
+  width: 33px;
+  height: 33px;
 }
-.frame-bg2 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1.2); /* увеличил — вылезет */
-  z-index: -1; /* чтобы было под контентом */
-  pointer-events: none;
-  width: 120px;
-  
+.mega-kur {
+  width: 24px;
+  margin-left: 20px; 
+  margin-top:3px; 
 }
+.num-kur {
+  display: inline-block;
+  font-size: 2.5vh;
+  font-weight: 400;
+  font-family: "Futura PT", "Century Gothic", sans-serif;
+  color: #000;
+  margin-left: 1px;
+  height: auto;
+  overflow: hidden;
+}
+.num-egg {
+  display: inline-block;
+  font-size: 2.5vh;
+  font-weight: 400;
+  font-family: "Futura PT", "Century Gothic", sans-serif;
+  color: #000;
+  margin-left: 1px;
+  height: auto;
+  overflow: hidden;
+} 
+.egg{
+  width: 26px;
+  margin-left: 12px; 
+  margin-top:3px;
+}
+
   </style>
 </head>
 <body>
@@ -350,36 +422,19 @@ html, body {
                 <img class="feed-icon" src="assets/img/food.png" alt="bags" />
                 <span class="feed-num">01</span>
           </div>
-          <div class="center-stats">
-                <!-- <button class="btn-add-chicken" id="btnAddChicken" title="Добавить курицу">
-                  <img src="assets/img/plus.png" alt="+" />
-                </button> -->
-              <div class="full-frame">
-                  <div class="frame-1">
-                    <img src="/assets/img/frame 1.png" alt="Frame 1" class="frame-bg">
-                      <div class="stat-pill">
-                          <img src="assets/img/rooster.png" alt="chicken" />
-                          <span id="chickenCount">2</span>
-                      </div>
-                  </div>
 
-                  <div class="frame-2">
-                    <img src="/assets/img/frame 2.png" alt="Frame 2" class="frame-bg2">
-                      <div class="stat-pill">
-                          <img src="assets/img/chicken.png" alt="rooster" />
-                          <span id="roosterCount">1</span>
-                      </div>
-                      <div class="stat-pill">
-                          <img src="assets/img/egg.png" alt="egg" />
-                          <span id="eggCount">10</span>
-                      </div>
-                  </div>
-              </div>
+          <div class="center-stats">
+              <img class="plus-icon" src="/assets/img/plus.png" alt="">
+              <div class="left-block"><img class="mega-kur" src="/assets/img/rooster.png" alt=""> <span class="num-kur">2</span></div>
+              <div class="middle-block"><img class="mega-kur" src="/assets/img/chicken.png" alt=""> <span class="num-kur">1</span></div>
+              <div class="right-block"><img class="egg" src="/assets/img/egg.png" alt=""> <span class="num-egg">10</span></div>
           </div>
+
           <div class="day-counter">
               <span class="day-label">1 День</span>
+              <div class="day-line-money"></div>
               <span class="day-money">000$</span>
-          </div>
+      </div>
     </div>
 
     <!-- SCENE  -->
@@ -408,31 +463,33 @@ html, body {
 
       <!-- Coop -->
       <div class="coop-wrap">
-        <button class="btn-plus-coop" id="btnAddCoop" title="Добавить курятник">
-          <img src="assets/img/plus.png" alt="+" />
-        </button>
         <img class="coop-img" src="assets/img/coop.png" alt="Курятник" />
+      </div>
+      <div class="roost-wrap">
+        <img class="roost-img" src="assets/img/roost.png" alt="Курятник" />
+
       </div>
     </div>
 
-   <!-- BOTTOM -->
-    <div class="bottom-section">
-      <div class="hay-area"></div>
-      <nav class="nav-bar">
-        <button class="nav-btn" id="btnMarket" title="Рынок">
-          <img src="assets/img/button market.png" alt="РЫНОК" />
-        </button>
-        <button class="nav-btn" id="btnLeaders" title="Лидеры">
-          <img src="assets/img/button leaders.png" alt="ЛИДЕРЫ" />
-        </button>
-        <button class="nav-btn" id="btnSettings" title="Настройки">
-          <img src="assets/img/button settings.png" alt="НАСТРОЙКИ" />
-        </button>
-      </nav>
+    <div class="bottom-panel">
+      <div class="panel-bg">
+        <div class="btn btn-market" id="btnMarket">
+          <img src="assets/img/background market.png" alt="Рынок">
+          <span class="btn-label">РЫНОК</span>
+        </div>
+        <div class="btn btn-leaders" id="btnLeaders">
+          <img src="assets/img/background leaders.png" alt="Лидеры">
+          <span class="btn-label">ЛИДЕРЫ</span>
+        </div>
+        <div class="btn btn-settings" id="btnSettings">
+          <img src="assets/img/background settings.png" alt="Настройки">
+          <span class="btn-label">НАСТРОЙКИ</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <script>
+  <script>                                  
     // ── NAV BUTTONS ──
     document.getElementById('btnMarket').addEventListener('click', () => {
       console.log('play'); // market = play screen
@@ -469,5 +526,8 @@ html, body {
       console.log('play'); // market building also opens market
     });
   </script>
+  <!-- <div style="width: 500px; border-top:2px solid #ff0000;position: absolute;margin-top: -855px;"></div> -->
 </body>
 </html> 
+
+
